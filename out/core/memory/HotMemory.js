@@ -13,7 +13,7 @@ class HotMemory {
     }
     add(content, metadata) {
         const chunk = {
-            id: hot--,
+            id: `hot-${Date.now()}`,
             content,
             timestamp: Date.now(),
             tokens: this.estimateTokens(content),

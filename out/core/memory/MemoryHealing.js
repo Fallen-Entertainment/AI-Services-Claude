@@ -14,25 +14,22 @@ class MemoryHealing {
         const hotStats = this.hot.getStats();
         const hotUsage = (hotStats.tokens / 100000) * 100;
         if (hotUsage > 90) {
-            issues.push(Hot, memory, at % capacity);
+            issues.push(`Hot memory at ${hotUsage.toFixed(1)}% capacity`);
         }
         // Check warm memory health
         const warmStats = this.warm.getStats();
         const warmUsage = (warmStats.chunks / 100) * 100;
         if (warmUsage > 90) {
-            issues.push(Warm, memory, at % capacity);
+            issues.push(`Warm memory at ${warmUsage.toFixed(1)}% capacity`);
         }
-        // Auto-archive if needed
+        // Check if warm memory needs archival
         if (warmStats.chunks > 100) {
-            const archived = await this.warm.archiveToCold(this.cold);
-            if (archived > 0) {
-                repaired.push(Archived, warm, chunks, to, cold, storage);
-            }
+            issues.push(`Warm memory has ${warmStats.chunks} chunks (limit: 100)`);
         }
         // Check cold storage size
-        const coldStats = await this.cold.getStats();
-        if (coldStats.sizeKB > 10000) { // 10MB
-            issues.push(Cold, storage, size, KB);
+        const coldStats = this.cold.getStats();
+        if (coldStats.fileSizeKB > 10000) { // 10MB
+            issues.push(`Cold storage size: ${coldStats.fileSizeKB} KB`);
         }
         // Calculate health score
         const score = this.calculateHealthScore(issues, repaired);
@@ -40,19 +37,16 @@ class MemoryHealing {
     }
     async autoRepair() {
         const repaired = [];
-        // Archive warm to cold if needed
+        // Check warm memory status
         const warmStats = this.warm.getStats();
         if (warmStats.chunks > 80) {
-            const archived = await this.warm.archiveToCold(this.cold);
-            if (archived > 0) {
-                repaired.push(Auto - archived, chunks, from, warm, to, cold);
-            }
+            repaired.push(`Warm memory has ${warmStats.chunks} chunks - consider manual archival`);
         }
         // Evict old hot entries if needed
         const hotStats = this.hot.getStats();
         if (hotStats.tokens > 90000) {
             // Hot memory auto-evicts on add, but we can trigger manual cleanup
-            repaired.push(Hot, memory, approaching, limit, will, auto - evict, on, next, write);
+            repaired.push(`Hot memory approaching limit, will auto-evict on next write`);
         }
         return repaired;
     }

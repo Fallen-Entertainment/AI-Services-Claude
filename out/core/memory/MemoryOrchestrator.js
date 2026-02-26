@@ -69,7 +69,7 @@ class MemoryOrchestrator {
     }
     // Run health check and auto-repair
     async healthCheck() {
-        return await this.healing.autoHeal();
+        return await this.healing.diagnose();
     }
     // Manual maintenance: compress hot  warm
     async compressHot() {

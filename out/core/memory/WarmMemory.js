@@ -16,7 +16,7 @@ class WarmMemory {
         // Compress using AI (passed in as dependency)
         const summary = await compress(combined);
         const chunk = {
-            id: warm--,
+            id: `warm-${Date.now()}`,
             summary,
             originalIds: hotChunks.map(c => c.id),
             timestamp: Date.now(),

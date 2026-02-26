@@ -6,7 +6,7 @@
 import { HotMemory, MemoryChunk } from './HotMemory';
 import { WarmMemory, CompressedChunk } from './WarmMemory';
 import { ColdMemoryStore, ColdMemory } from './ColdMemory';
-import { MemoryHealing, HealthReport } from './MemoryHealing';
+import { MemoryHealing, MemoryHealth } from './MemoryHealing';
 
 export interface MemorySearchResult {
     source: 'hot' | 'warm' | 'cold';
@@ -94,8 +94,8 @@ export class MemoryOrchestrator {
     }
 
     // Run health check and auto-repair
-    async healthCheck(): Promise<HealthReport> {
-        return await this.healing.autoHeal();
+    async healthCheck(): Promise<MemoryHealth> {
+        return await this.healing.diagnose();
     }
 
     // Manual maintenance: compress hot  warm

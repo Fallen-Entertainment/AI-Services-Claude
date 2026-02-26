@@ -18,7 +18,7 @@ export class HotMemory {
 
     add(content: string, metadata?: Record<string, any>): MemoryChunk {
         const chunk: MemoryChunk = {
-            id: hot--,
+            id: `hot-${Date.now()}`,
             content,
             timestamp: Date.now(),
             tokens: this.estimateTokens(content),
